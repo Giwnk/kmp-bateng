@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('kecamatan_id')->constrained('kecamatans')->onDelete('cascade');
             $table->foreignId('desa_id')->constrained('desas')->onDelete('cascade');
-            $table->foreignId('jenis_koperasi_id')->constrained('jenis_koperasis')->onDelete('cascade');
             
             $table->string('nama');
             $table->string('nomor_badan_hukum')->unique()->nullable();
@@ -32,7 +31,10 @@ return new class extends Migration
             $table->decimal('total_modal', 15, 2)->default(0);
             
             // Status & Kondisi
-            $table->enum('status', ['Aktif', 'Non Aktif', 'Dalam Pembinaan'])->default('Aktif');
+            // UPDATE: tambah kolom status_operasional, status_sertifikat, status_pelatihan
+            $table->boolean('status_operasional')->default(false)->comment('Sudah/Belum');
+            $table->boolean('status_sertifikat')->default(false)->comment('Sudah/Belum');
+            $table->boolean('status_pelatihan')->default(false)->comment('Sudah/Belum');
             $table->enum('kondisi_lahan', ['Sudah Verifikasi', 'Memenuhi Syarat', 'Tahap Pembangunan', 'Belum Verifikasi'])->default('Belum Verifikasi');
             $table->string('sumber')->nullable()->comment('BPKAD, DPMD, TNI, dll');
             
@@ -53,6 +55,13 @@ return new class extends Migration
             $table->decimal('progress_pembangunan', 5, 2)->default(0)->comment('dalam persen');
             $table->text('keterangan')->nullable();
             
+            // UPDATE: Tambah kolom kolom untuk link sosial media sebgai opsi
+            // Sosmed (optional)
+            $table->string('link_facebook')->nullable();
+            $table->string('link_instagram')->nullable();
+            $table->string('link_youtube')->nullable();
+            $table->string('link_tiktok')->nullable();
+
             $table->timestamps();
             $table->softDeletes();
         });

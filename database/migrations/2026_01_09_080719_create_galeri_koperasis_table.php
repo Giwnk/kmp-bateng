@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jenis_koperasis', function (Blueprint $table) {
+        // UPDATE: tambah skema galeri koperasi
+        Schema::create('galeri_koperasis', function (Blueprint $table) {
             $table->id();
-            $table->string('nama'); // Gerai Sembako, Gerai Apotek Desa, dll
-            $table->string('kode', 20); // SEMBAKO, APOTEK, KANTOR, dll
-            $table->text('keterangan')->nullable();
+            $table->foreignId('koperasi_id')->constrained('koperasis')->onDelete('cascade');
+            $table->string('foto_path'); // Path file gambar
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jenis_koperasis');
+        Schema::dropIfExists('galeri_koperasis');
     }
 };
