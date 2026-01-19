@@ -9,8 +9,9 @@ class JenisUsaha extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
+    protected $casts = ['status_aktif' => 'string'];
 
     public function koperasi() {
-        return $this->belongsTo(Koperasi::class);
+        return $this->belongsToMany(Koperasi::class, 'pilihan_jenis_usaha');
     }
 }
