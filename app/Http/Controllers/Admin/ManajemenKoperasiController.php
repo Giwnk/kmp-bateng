@@ -59,6 +59,48 @@ class ManajemenKoperasiController extends Controller
         return back()->with('success', 'Koperasi berhasil ditambahkan');
     }
 
+    public function edit(Koperasi $koperasi)
+    {
+        // 1. Ambil opsi untuk dropdown (Sama kayak create)
+        $kecamatans = Kecamatan::select('id', 'nama')->orderBy('nama')->get();
+        $jenisUsahas = JenisUsaha::select('id', 'nama')->orderBy('nama')->get();
+        $desas = Desa::where('kecamatan_id', $koperasi->kecamatan_id)
+                 ->select('id', 'nama')
+                 ->get();
+
+        // 2. Load relasi jenis usaha yang sudah dipilih sebelumnya
+        $koperasi->load('jenisUsahas');
+
+        // 3. Transformasi data biar enak dimakan Frontend
+        // Kita butuh Array ID saja buat default value checkbox (cth: [1, 3, 5])
+        $koperasi->jenis_usaha_ids = $koperasi->jenisUsahas->pluck('id');
+
+        return Inertia::render('Admin/Koperasi/Edit', [
+            'koperasi' => $koperasi,
+            'kecamatanOpt' => $kecamatans,
+            'jenisUsahaOpt' => $jenisUsahas,
+            'desaOpt' => $desas,
+        ]);
+    }
+
+    public function update(UpdateKoperasiRequest $request, Koperasi $koperasi)
+    {
+        // 1. Validasi
+        $data = $request->validated();
+
+        // 2. Pisahkan Array Pivot
+        $jenisUsahaIds = $data['jenis_usaha_ids'];
+        unset($data['jenis_usaha_ids']);
+
+        // 3. Update Data Utama Koperasi
+        $koperasi->update($data);
+
+        // 4. SYNC PIVOT TABLE (Magic Moment! ✨)
+        // Ini otomatis menghapus yang lama dan pasang yang baru
+        $koperasi->jenisUsaha()->sync($jenisUsahaIds);
+        return redirect()->route('admin.koperasi.index')->with('success', 'Data Koperasi berhasil diperbarui!');
+    }
+
     public function destroy(Koperasi $koperasi)
     {
         $koperasi->delete();
