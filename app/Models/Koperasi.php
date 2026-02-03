@@ -57,6 +57,11 @@ class Koperasi extends Model
         return $this->belongsToMany(JenisUsaha::class, 'pilihan_jenis_usaha');
     }
 
+    public function transaksis() // Pastikan namanya sama persis dengan yang di controller
+    {
+        return $this->hasMany(Transaksi::class);
+    }
+
     // --- FITUR TAMBAHAN (ACCESSOR) ---
     // Panggil di view: $koperasi->formatted_total_aset
     public function getFormattedTotalAsetAttribute() {
