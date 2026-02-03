@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateSdmRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateSdmRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->isUserKoperasi();
+        return true;
     }
 
     /**
@@ -21,7 +22,7 @@ class UpdateSdmRequest extends FormRequest
      */
     public function rules(): array
     {
-        $sdmId = $this->route('sdm_koperasi');
+        $sdmId = $this->route('sdm');
         return [
             'nama' => 'required|string|max:225',
             'nik' => ['required', 'numeric', 'digits:16', Rule::unique('sdm_koperasis', 'nik')->ignore($sdmId) ],

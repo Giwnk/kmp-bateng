@@ -37,7 +37,7 @@ class UpdateKoperasiRequest extends FormRequest
         // Cek 'php artisan route:list', pastikan nama parameternya 'koperasi'
         // Contoh URL: /koperasi/{koperasi}/update
         $koperasi = $this->route('koperasi');
-        $id = $koperasi->id;
+        $id = $koperasi;
 
         return [
             // --- 1. IDENTITAS UTAMA (Pake Ignore Rule) ---
