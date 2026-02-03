@@ -70,9 +70,10 @@ class DashboardController extends Controller
     {
         // Pastikan user sudah terhubung ke koperasi
         if (!$user->koperasi_id) {
-            return ; // Buat view error kalau user belum di-set koperasinya
+            // Jangan 'return ;' tapi redirect atau kirim props minimal
+            return redirect()->route('profile.edit')->with('warning', 'Lengkapi data koperasi Anda.');
         }
-
+        
         $koperasiId = $user->koperasi_id;
         $bulanIni = Carbon::now()->month;
         $tahunIni = Carbon::now()->year;
@@ -92,7 +93,7 @@ class DashboardController extends Controller
 
             // PENTING: Pakai sum() bukan count() untuk uang
             'total_saldo'      => Transaksi::where('koperasi_id', $koperasiId)
-                                    ->where('jenis', ['Simpanan Pokok', 'Simpanan Wajib', 'Simpanan Sukarela']) // Asumsi: hitung uang masuk saja
+                                    ->whereIn('jenis_transaksi', ['Simpanan Pokok', 'Simpanan Wajib', 'Simpanan Sukarela']) // Asumsi: hitung uang masuk saja
                                     ->sum('jumlah'),
 
             // 2. Status Laporan (Boolean: true/false)
