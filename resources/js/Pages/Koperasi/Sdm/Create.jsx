@@ -1,61 +1,31 @@
-import React, { useState } from "react";
-import UsersLayout from "@/Layouts/UsersLayout";
-import { Head, useForm, Link } from "@inertiajs/react";
-import {
-    ArrowLeft,
-    Save,
-    User,
-    CreditCard,
-    Briefcase,
-    Calendar,
-    MapPin,
-    Phone,
-    Mail,
-    Image as ImageIcon,
-    Layers,
-    Activity,
-    UploadCloud,
-} from "lucide-react";
-import InputError from "@/Components/InputError";
 import Dropdown from "@/Components/SelfMade/Dropdown";
+import InputError from "@/Components/InputError";
+import UsersLayout from "@/Layouts/UsersLayout";
+import { useForm, Link } from "@inertiajs/react";
+import { ArrowLeft, ImageIcon, UploadCloud, Save } from "lucide-react";
 import TextInput from "@/Components/SelfMade/TextInput";
 import UpImage from "@/Components/SelfMade/UpImage";
+import { useState } from "react";
 
-export default function Edit({ auth, sdmData, jabatanOpt, statusOpt }) {
-    // Kategori disesuaikan dengan kebutuhan (biasanya: Pengurus, Pengawas, atau Karyawan)
-    const kategoriOpt = ["Pengurus Koperasi", "Pengawas Koperasi"];
-
-    const formatTanggal = (dateString) => {
-        if (!dateString) return "Tanggal tidak tersedia";
-
-        const date = new Date(dateString);
-        // Kita pakai Intl.DateTimeFormat biar otomatis dapet nama bulan Indo
-        return new Intl.DateTimeFormat("id-ID", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-        }).format(date);
-    };
-
+export default function Create({ auth, jabatanOpt, statusOpt }) {
+    const kategoriOpt = ['Pengurus Koperasi', 'Pengawas Koperasi']
     const { data, setData, post, processing, errors, isDirty } = useForm({
-        _method: "PUT", // Digunakan agar bisa kirim file (foto) via POST namun dibaca PUT oleh Laravel
-        nama: sdmData.nama || "",
-        nik: sdmData.nik || "",
-        kategori: sdmData.kategori || "",
-        tanggal_bergabung: sdmData.tanggal_bergabung
-            ? sdmData.tanggal_bergabung.substring(0, 10)
-            : "",
-        jabatan: sdmData.jabatan || "",
-        alamat: sdmData.alamat || "",
-        nomor_telepon: sdmData.nomor_telepon || "",
-        email: sdmData.email || "",
-        status: sdmData.status || "Aktif",
+        _method: "POST", // Digunakan agar bisa kirim file (foto) via POST namun dibaca PUT oleh Laravel
+        nama: "",
+        nik: "",
+        kategori: "",
+        tanggal_bergabung: "",
+        jabatan: "",
+        alamat: "",
+        nomor_telepon: "",
+        email: "",
+        status: "Aktif",
         foto: null,
     });
 
     const [preview, setPreview] = useState(
-        sdmData.foto ? `/storage/${sdmData.foto}` : null,
-    );
+            data.foto ? `/storage/${data.foto}` : null,
+        );
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
@@ -71,13 +41,11 @@ export default function Edit({ auth, sdmData, jabatanOpt, statusOpt }) {
         e.preventDefault();
         // Menggunakan post dengan _method PUT karena PHP/Laravel memiliki kendala
         // membaca data 'multipart/form-data' langsung via metode PUT asli.
-        post(route("users.sdm.update", sdmData.id));
+        post(route("users.sdm.store"));
     };
 
     return (
         <UsersLayout auth={auth}>
-            <Head title="Edit Profil Pengurus" />
-
             <div className="p-8 space-y-8 max-w-5xl mx-auto">
                 {/* Header Section */}
                 <div className="flex items-center gap-6">
@@ -89,7 +57,7 @@ export default function Edit({ auth, sdmData, jabatanOpt, statusOpt }) {
                     </Link>
                     <div>
                         <h1 className="text-2xl font-semibold text-gray-900 tracking-tighter leading-none">
-                            Edit SDM Profil
+                            Tambah SDM
                         </h1>
                     </div>
                 </div>
@@ -101,12 +69,7 @@ export default function Edit({ auth, sdmData, jabatanOpt, statusOpt }) {
                     {/* Sisi Kiri: Foto & Status */}
                     <div className="lg:col-span-1 space-y-6">
                         <div className="bg-white p-8 rounded-[3rem] border border-gray-100 shadow-sm text-center">
-                            <UpImage
-                                onFileChange={handleFileChange}
-                                preview={preview}
-                                error={errors.foto}
-                            />
-
+                            <UpImage onFileChange={handleFileChange} error={errors.foto} preview={preview}/>
                             <Dropdown
                                 options={statusOpt}
                                 value={data.status}
@@ -140,8 +103,8 @@ export default function Edit({ auth, sdmData, jabatanOpt, statusOpt }) {
                                     onChange={(e) =>
                                         setData("nik", e.target.value)
                                     }
-                                    error={errors.nik}
                                     label={"NIK (16 Digit)"}
+                                    error={errors.nik}
                                 />
                             </div>
 
@@ -152,9 +115,9 @@ export default function Edit({ auth, sdmData, jabatanOpt, statusOpt }) {
                                     onChange={(e) =>
                                         setData("kategori", e.target.value)
                                     }
-                                    error={errors.kategori}
                                     label={"Pilih Kategori"}
                                     options={kategoriOpt}
+                                    error={errors.kategori}
                                 />
                                 <TextInput
                                     type={"date"}
@@ -165,8 +128,8 @@ export default function Edit({ auth, sdmData, jabatanOpt, statusOpt }) {
                                             e.target.value,
                                         )
                                     }
-                                    error={errors.tanggal_bergabung}
                                     label={"Tanggal Bergabung"}
+                                    error={errors.tanggal_bergabung}
                                 ></TextInput>
                             </div>
 
@@ -177,9 +140,9 @@ export default function Edit({ auth, sdmData, jabatanOpt, statusOpt }) {
                                     onChange={(e) =>
                                         setData("jabatan", e.target.value)
                                     }
-                                    error={errors.jabatan}
                                     label={"Pilih Jabatan"}
                                     options={jabatanOpt}
+                                    error={errors.jabatan}
                                 />
                                 <TextInput
                                     type={"text"}
@@ -187,8 +150,8 @@ export default function Edit({ auth, sdmData, jabatanOpt, statusOpt }) {
                                     onChange={(e) =>
                                         setData("nomor_telepon", e.target.value)
                                     }
-                                    error={errors.nomor_telepon}
                                     label={"Nomor Telepon"}
+                                    error={errors.nomor_telepon}
                                 ></TextInput>
                             </div>
 
@@ -200,8 +163,8 @@ export default function Edit({ auth, sdmData, jabatanOpt, statusOpt }) {
                                     onChange={(e) =>
                                         setData("email", e.target.value)
                                     }
-                                    error={errors.email}
                                     label={"Email"}
+                                    error={errors.email}
                                 ></TextInput>
                                 <TextInput
                                     type={"text"}
@@ -209,8 +172,8 @@ export default function Edit({ auth, sdmData, jabatanOpt, statusOpt }) {
                                     onChange={(e) =>
                                         setData("alamat", e.target.value)
                                     }
-                                    error={errors.alamat}
                                     label={"Alamat"}
+                                    error={errors.alamat}
                                 ></TextInput>
                             </div>
 
@@ -236,23 +199,6 @@ export default function Edit({ auth, sdmData, jabatanOpt, statusOpt }) {
                     </div>
                 </form>
             </div>
-
-            <style>{`
-                .form-input-command {
-                    width: 100%;
-                    background-color: #f9fafb;
-                    border: none;
-                    border-radius: 1.25rem;
-                    padding: 1rem 1.25rem;
-                    font-size: 0.875rem;
-                    font-weight: 700;
-                    color: #1f2937;
-                    transition: all 0.2s;
-                }
-                .form-input-command:focus {
-                    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-                }
-            `}</style>
         </UsersLayout>
     );
 }

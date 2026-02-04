@@ -142,7 +142,7 @@ export default function Index({ auth, sdmKoperasi, jabatanOpt, statusOpt }) {
         <UsersLayout auth={auth}>
             <Head title="Kelola SDM Pengurus" />
 
-            <div className="p-8 space-y-6">
+            <div className="p-6 space-y-6">
                 <div className="flex justify-between items-end">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900 tracking-tighter">
@@ -152,12 +152,12 @@ export default function Index({ auth, sdmKoperasi, jabatanOpt, statusOpt }) {
                             Kelola SDM Pengurus dan Pengawas Koperasi.
                         </p>
                     </div>
-                    <button
-                        onClick={() => openModal()}
+                    <Link
+                        href={route("users.sdm.create")}
                         className="flex items-center gap-2 bg-blue-950 text-white px-5 py-3 rounded-2xl font-medium text-sm tracking-widest hover:bg-blue-900 transition-all shadow-xl shadow-gray-200"
                     >
                         <Plus size={16} /> Tambah SDM
-                    </button>
+                    </Link>
                 </div>
 
                 <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden min-h-[500px] flex flex-col">
