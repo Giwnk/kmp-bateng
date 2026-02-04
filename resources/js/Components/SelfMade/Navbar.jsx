@@ -16,7 +16,7 @@ export default function Navbar() {
     }, []);
 
     const navLinks = [
-        { name: "Home", href: "#home" },
+        { name: "Home", href: "#" },
         { name: "Statistik", href: "#statistik" },
         { name: "Sebaran", href: "#sebaran" },
         { name: "Kontak", href: "#kontak" },

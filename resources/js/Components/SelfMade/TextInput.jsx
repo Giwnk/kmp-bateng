@@ -14,7 +14,7 @@ export default function TextInput({
             {label && (
                 <label
                     htmlFor={name}
-                    className="mb-1 text-sm font-medium text-blue-950"
+                    className="mb-1 text-sm font-semibold text-blue-950"
                 >
                     {label}
                 </label>
@@ -26,7 +26,7 @@ export default function TextInput({
                 id={name}
                 name={name}
                 value={value}
-                className={`border-2 border-gray-300 rounded-3xl w-full text-base text-blue-950 font-normal px-6 ${error ? "focus:border-red-800" : "focus:ring-blue-900 focus:border-blue-900"}`}
+                className={`border-2 border-gray-400 rounded-3xl w-full text-base text-slate-950 font-semibold px-6 ${error ? "focus:border-red-800" : "focus:ring-blue-900 focus:border-blue-900"}`}
                 {...props}
             />
             {error && (

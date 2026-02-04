@@ -1,3 +1,4 @@
+import { AlertCircle } from "lucide-react";
 import React from "react";
 
 export default function SelectInput({
@@ -19,7 +20,7 @@ export default function SelectInput({
             {label && (
                 <label
                     htmlFor={name}
-                    className="mb-1 text-sm font-medium text-blue-950"
+                    className="mb-1 text-sm font-semibold text-blue-950"
                 >
                     {label}
                 </label>
@@ -34,12 +35,12 @@ export default function SelectInput({
                 className={`
                     w-full border shadow-sm transition-all duration-200
                      focus:ring-blue-900 focus:border-blue-900 rounded-3xl outline-none
-                    bg-white cursor-pointer
+                    bg-white cursor-pointer font-medium flex items-start
                     disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed
                     ${
                         error
                             ? "border-red-500 focus:border-red-500 focus:ring-red-500/20"
-                            : "border-gray-300 border-2"
+                            : "border-gray-400 border-2"
                     }
                 `}
                 {...props}
@@ -68,8 +69,8 @@ export default function SelectInput({
             </select>
 
             {error && (
-                <p className="mt-1 text-xs text-red-500 font-medium flex items-center gap-1">
-                    ⚠️ {error}
+                <p className="mt-1 text-xs text-red-800 font-medium flex items-center gap-1">
+                    <AlertCircle /> {error}
                 </p>
             )}
         </div>
