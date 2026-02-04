@@ -36,6 +36,13 @@ class KelolaSdmController extends Controller
         ]);
     }
 
+    public function create() {
+        return Inertia::render('Koperasi/Sdm/Create', [
+            'jabatanOpt' => ['Ketua', 'Sekretaris', 'Bendahara', 'Pengawas', 'Manager'],
+            'statusOpt' => ['Aktif', 'Non Aktif']
+        ]);
+    }
+
     public function show(SdmKoperasi $sdm){
         if ($sdm->koperasi_id !== Auth::user()->koperasi->id) {
             abort(403);
@@ -49,9 +56,14 @@ class KelolaSdmController extends Controller
     public function store(StoreSdmRequest $request){
         $koperasi = Auth::user()->koperasi;
         $validatedData = $request->validated();
+        if ($request->hasFile('foto')) {
+            // 👈 SIMPAN HASIL STORE KE DALAM VARIABEL
+            $path = $request->file('foto')->store('foto-sdm', 'public');
+            $validatedData['foto'] = $path; // Yang disimpan cuma "foto-sdm/xxx.jpg"
+        }
         $koperasi->sdmKoperasis()->create($validatedData);
 
-        return back()->with('success', 'Data SDM berhasil ditambahkan');
+        return redirect()->route('users.sdm.index')->with('success', 'Data SDM berhasil dibuat!');
     }
 
     public function update(UpdateSdmRequest $request, SdmKoperasi $sdm){

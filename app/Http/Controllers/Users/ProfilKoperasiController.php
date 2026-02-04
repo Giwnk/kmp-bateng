@@ -17,7 +17,7 @@ class ProfilKoperasiController extends Controller
 {
     public function show(){
         $koperasi = Auth::user()->koperasi;
-        $koperasi->load(['kecamatan', 'desa', 'jenisUsahas'])
+        $koperasi->load(['kecamatan', 'desa', 'jenisUsahas', 'ketua', 'sekretaris', 'bendahara'])
              ->loadCount([
                 'sdmKoperasis as jumlah_pengurus' => function ($query) {
                     $query->where('kategori', 'Pengurus Koperasi');
