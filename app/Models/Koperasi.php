@@ -72,23 +72,20 @@ class Koperasi extends Model
     {
         return $this->hasOne(SdmKoperasi::class, 'koperasi_id')
                     ->where('jabatan', 'Ketua')
-                    ->where('status', 'Aktif')
-                    ->latestOfMany();
+                    ->where('status', 'Aktif');
     }
 
     public function sekretaris()
     {
         return $this->hasOne(SdmKoperasi::class, 'koperasi_id')
                     ->where('jabatan', 'Sekretaris')
-                    ->where('status', 'Aktif')
-                    ->latestOfMany();
+                    ->where('status', 'Aktif');
     }
 
     public function bendahara()
     {
         return $this->hasOne(SdmKoperasi::class, 'koperasi_id')
                     ->where('jabatan', 'Bendahara')
-                    ->where('status', 'Aktif')
-                    ->latestOfMany();
+                    ->where('status', 'Aktif');
     }
 }
