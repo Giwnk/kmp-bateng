@@ -15,7 +15,7 @@ import {
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 
-export default function SidebarUsers({ className, auth, menuItems }) {
+export default function SidebarAdmin({ className, auth, menuItems }) {
     const MotionLink = motion(Link);
     const handleLogout = (e) => {
         e.preventDefault();

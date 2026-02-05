@@ -46,7 +46,10 @@ export default function ModalDialog({
 
     return (
         // BACKDROP (Overlay Gelap)
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden p-4 sm:p-0 transition-all">
+        <div
+            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden p-4 sm:p-0 transition-all"
+        >
             {/* Background Gelap (Klik sini bisa close) */}
             <div
                 className="fixed inset-0 transform transition-all"
