@@ -14,10 +14,18 @@ use Inertia\Inertia;
 
 class KelolaGaleriController extends Controller
 {
-    public function index(){
-        $galeri = Auth::user()->koperasi()->galeriKoperasis();
+    public function index()
+    {
+        $koperasi = Auth::user()->koperasi;
+
+        // 1. Panggil relasi pake tanda kurung () biar jadi Query Builder
+        // 2. Baru tempelkan latest() dan paginate()
+        $galeri = $koperasi->galeriKoperasis()
+            ->latest()
+            ->paginate(10);
+
         return Inertia::render('Koperasi/Galeri/Index', [
-            'galeri' => $galeri->latest()->paginate(10)
+            'galeri' => $galeri
         ]);
     }
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreLaporanBulananRequest;
 use App\Http\Requests\UpdateLaporanBulananRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\LaporanBulanan;
 use App\Models\Transaksi;
@@ -46,23 +47,52 @@ class LaporanBulananController extends Controller
         ]);
     }
 
-    public function store(StoreLaporanBulananRequest $request){
+    public function store(StoreLaporanBulananRequest $request)
+    {
         $koperasi = Auth::user()->koperasi;
         $validatedData = $request->validated();
+
         $bulan = $validatedData['bulan'];
         $tahun = $validatedData['tahun'];
 
-        $validatedData['jumlah_anggota_aktif'] = $koperasi->anggotaKoperasis()
-        ->where('status', 'Aktif')
-        ->count();
+        // 1. CEK DUPLIKASI: Jangan sampai satu bulan ada dua laporan
+        $isExists = $koperasi->laporanBulanan()
+            ->where('bulan', $bulan)
+            ->where('tahun', $tahun)
+            ->exists();
 
-        $validatedData['simpanan_pokok'] = Transaksi::whereHas('anggotaKoperasi', fn($q) => $q->where('koperasi_id', $koperasi->id))
-            ->where('jenis_transaksi', 'Simpanan Pokok')->whereMonth('tanggal_transaksi', $bulan)->whereYear('tanggal_transaksi', $tahun)->sum('jumlah');
-        $validatedData['simpanan_wajib'] = Transaksi::whereHas('anggotaKoperasi', fn($q) => $q->where('koperasi_id', $koperasi->id))
-            ->where('jenis_transaksi', 'Simpanan Wajib')->whereMonth('tanggal_transaksi', $bulan)->whereYear('tanggal_transaksi', $tahun)->sum('jumlah');
+        if ($isExists) {
+            return back()->withErrors(['bulan' => "Laporan untuk periode $bulan/$tahun sudah pernah dibuat!"]);
+        }
 
-        $koperasi->laporanBulanan()->create($validatedData);
-        return back()->with('success', 'Laporan berhasil ditambahkan');
+        // Di dalam function store:
+        return DB::transaction(function () use ($koperasi, $validatedData, $bulan, $tahun) {
+            $dataLaporan = [
+                'koperasi_id'          => $koperasi->id,
+                'bulan'                => $bulan,
+                'tahun'                => $tahun,
+                'jumlah_anggota_aktif' => $koperasi->anggotaKoperasis()->where('status', 'Aktif')->count(),
+
+                'total_simpanan_pokok' => Transaksi::whereHas('anggotaKoperasi', fn($q) => $q->where('koperasi_id', $koperasi->id))
+                    ->where('jenis_transaksi', 'Simpanan Pokok')
+                    ->whereMonth('tanggal_transaksi', $bulan)
+                    ->whereYear('tanggal_transaksi', $tahun)
+                    ->sum('jumlah'),
+
+                'total_simpanan_wajib' => Transaksi::whereHas('anggotaKoperasi', fn($q) => $q->where('koperasi_id', $koperasi->id))
+                    ->where('jenis_transaksi', 'Simpanan Wajib')
+                    ->whereMonth('tanggal_transaksi', $bulan)
+                    ->whereYear('tanggal_transaksi', $tahun)
+                    ->sum('jumlah'),
+
+                'catatan' => $validatedData['catatan'] ?? null, // Sekarang sudah sinkron
+                'status'  => 'Draft',
+            ];
+
+            $koperasi->laporanBulanan()->create($dataLaporan);
+
+            return back()->with('success', 'Laporan bulanan berhasil dibuat! 🚀');
+        });
     }
 
     public function update(UpdateLaporanBulananRequest $request, LaporanBulanan $laporanBulananData){
