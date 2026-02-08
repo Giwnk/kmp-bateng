@@ -68,43 +68,66 @@ class DashboardController extends Controller
     // --- LOGIC KOPERASI (Local View) ---
     private function dashboardKoperasi($user)
     {
-        // Pastikan user sudah terhubung ke koperasi
+        // 1. Validasi Koperasi (Security First!)
         if (!$user->koperasi_id) {
-            // Jangan 'return ;' tapi redirect atau kirim props minimal
             return redirect()->route('profile.edit')->with('warning', 'Lengkapi data koperasi Anda.');
         }
-        
+
         $koperasiId = $user->koperasi_id;
-        $bulanIni = Carbon::now()->month;
-        $tahunIni = Carbon::now()->year;
+        $now = Carbon::now();
 
-
-        // Cek apakah laporan bulan ini sudah ada?
+        // 2. Cek Status Laporan Bulan Ini
         $laporanBulanIni = LaporanBulanan::where('koperasi_id', $koperasiId)
-                            ->whereMonth('created_at', $bulanIni)
-                            ->whereYear('created_at', $tahunIni)
-                            ->where('status', 'Submitted')
-                            ->exists();
+            ->where('bulan', $now->month)
+            ->where('tahun', $now->year)
+            ->where('status', 'Approved')
+            ->exists();
 
-        // Fitur sesuai gambar: Anggota, Saldo, Status Laporan, Shortcut
+        // 3. Logika Grafik: Tren Simpanan 6 Bulan Terakhir (Line Chart)
+        $chartTrend = Transaksi::select(
+            DB::raw("DATE_FORMAT(tanggal_transaksi, '%M') as bulan"), // Nama bulan untuk label chart
+            DB::raw("SUM(jumlah) as total")
+        )
+            ->where('koperasi_id', $koperasiId)
+            ->where('jenis_transaksi', '!=', 'Penarikan')
+            ->where('tanggal_transaksi', '>=', Carbon::now()->subMonths(6))
+            // 1. Tambahkan format Tahun-Bulan di Group By agar Januari 2025 & 2026 tidak tercampur
+            ->groupBy(DB::raw("DATE_FORMAT(tanggal_transaksi, '%Y-%m')"), 'bulan')
+            // 2. Urutkan berdasarkan format Tahun-Bulan agar urutan chart-nya kronologis (bukan alfabet)
+            ->orderBy(DB::raw("DATE_FORMAT(tanggal_transaksi, '%Y-%m')"), 'asc')
+            ->get();
+
+        // 4. Logika Grafik: Komposisi Simpanan (Doughnut Chart)
+        $komposisiSimpanan = Transaksi::select('jenis_transaksi', DB::raw('SUM(jumlah) as total'))
+            ->where('koperasi_id', $koperasiId)
+            ->whereIn('jenis_transaksi', ['Simpanan Pokok', 'Simpanan Wajib', 'Simpanan Sukarela'])
+            ->groupBy('jenis_transaksi')
+            ->get();
+
+        
+
+        // 5. Build Data Final
         $data = [
-            // 1. Statistik Mikro
-            'total_anggota'    => AnggotaKoperasi::where('koperasi_id', $koperasiId)->count(),
-
-            // PENTING: Pakai sum() bukan count() untuk uang
-            'total_saldo'      => Transaksi::where('koperasi_id', $koperasiId)
-                                    ->whereIn('jenis_transaksi', ['Simpanan Pokok', 'Simpanan Wajib', 'Simpanan Sukarela']) // Asumsi: hitung uang masuk saja
+            'stats' => [
+                'total_anggota' => AnggotaKoperasi::where('koperasi_id', $koperasiId)->count(),
+                'total_saldo'   => Transaksi::where('koperasi_id', $koperasiId)
+                                    ->where('jenis_transaksi', '!=', 'Penarikan')
                                     ->sum('jumlah'),
-
-            // 2. Status Laporan (Boolean: true/false)
-            'sudah_lapor'      => $laporanBulanIni,
-
-            // 3. Audit Trail (5 Transaksi Terakhir)
-            'recent_transaksi' => Transaksi::with('anggota') // Eager load biar nama anggota muncul
-                                    ->where('koperasi_id', $koperasiId)
-                                    ->latest()
-                                    ->take(5)
-                                    ->get(),
+                'sudah_lapor'   => $laporanBulanIni,
+            ],
+            'charts' => [
+                'trend'     => $chartTrend,
+                'komposisi' => $komposisiSimpanan,
+            ],
+            'recent_transaksi' => Transaksi::with('anggotaKoperasi')
+                ->where('koperasi_id', $koperasiId)
+                ->latest()
+                ->take(5)
+                ->get(),
+            'recent_anggota' => AnggotaKoperasi::where('koperasi_id', $koperasiId)
+            ->latest()
+            ->take(5)
+            ->get(),
         ];
 
         return Inertia::render('Koperasi/Dashboard/Index', [
