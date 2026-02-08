@@ -28,8 +28,17 @@ class KelolaAnggotaController extends Controller
             abort(403);
         }
 
+        // Ambil saldo dari Accessor
+        $saldo = $anggota->saldo;
+
+        // Gabungkan data model dengan data saldo tambahan
+        $anggotaData = array_merge($anggota->toArray(), [
+            'saldo_simpanan_wajib' => number_format($saldo['wajib'], 0, ',', '.'),
+            'saldo_simpanan_pokok' => number_format($saldo['pokok'], 0, ',', '.')
+        ]);
+
         return Inertia::render('Koperasi/Anggota/Show', [
-            'anggotaData' => $anggota
+            'anggotaData' => $anggotaData
         ]);
     }
 

@@ -16,7 +16,7 @@ class KelolaSdmController extends Controller
 {
     public function index(){
         $koperasi = Auth::user()->koperasi;
-        $sdmKoperasi = $koperasi->sdmKoperasis()->latest()->get();
+        $sdmKoperasi = $koperasi->sdmKoperasis()->latest()->paginate(15);
         return Inertia::render('Koperasi/Sdm/Index', [
             'koperasi' => $koperasi,
             'sdmKoperasi' => $sdmKoperasi,

@@ -43,12 +43,12 @@ class TransaksiController extends Controller
 
             if ($validated['jenis_transaksi'] === 'Penarikan') {
                 // Kita cuma izinkan narik dari saldo Sukarela
-                $saldoSukarela = $anggota->transaksis()->where('kategori', 'Simpanan Sukarela')->sum('jumlah')
+                $saldoWajib = $anggota->transaksis()->where('jenis_transaksi', 'Simpanan Wajib')->sum('jumlah')
                             - $anggota->transaksis()->where('jenis_transaksi', 'Penarikan')->sum('jumlah');
 
-                if ($saldoSukarela < $validated['jumlah']) {
+                if ($saldoWajib < $validated['jumlah']) {
                     return back()->withErrors([
-                        'jumlah' => "Saldo Sukarela nggak cukup! Sisa saldo: Rp " . number_format($saldoSukarela, 0, ',', '.')
+                        'jumlah' => "Saldo Simpanan Wajib nggak cukup! Sisa saldo: Rp " . number_format($saldoWajib, 0, ',', '.')
                     ]);
                 }
             }

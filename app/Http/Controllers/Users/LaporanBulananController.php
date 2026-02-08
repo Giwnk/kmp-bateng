@@ -95,12 +95,12 @@ class LaporanBulananController extends Controller
         });
     }
 
-    public function update(UpdateLaporanBulananRequest $request, LaporanBulanan $laporanBulananData){
+    public function update(UpdateLaporanBulananRequest $request, LaporanBulanan $laporan){
         $koperasi = Auth::user()->koperasi;
-        if ($laporanBulananData->koperasi_id !== $koperasi->id) {
+        if ($laporan->koperasi_id !== $koperasi->id) {
             abort(403);
         }
-        if (in_array($laporanBulananData->status, ['Submitted', 'Approved'])) {
+        if (in_array($laporan->status, ['Submitted', 'Approved'])) {
             return back()->withErrors([
                 'message' => 'Laporan yang sudah terkirim atau disetujui tidak dapat dihapus!'
             ]);
@@ -117,23 +117,23 @@ class LaporanBulananController extends Controller
         $validatedData['simpanan_wajib'] = Transaksi::whereHas('anggotaKoperasi', fn($q) => $q->where('koperasi_id', $koperasi->id))
             ->where('jenis_transaksi', 'Simpanan Wajib')->whereMonth('tanggal_transaksi', $bulan)->whereYear('tanggal_transaksi', $tahun)->sum('jumlah');
 
-        $laporanBulananData->update($validatedData);
+        $laporan->update($validatedData);
         return back()->with('success', 'Laporan berhasil diperbarui');
     }
 
-    public function destroy(LaporanBulanan $laporanBulananData){
+    public function destroy(LaporanBulanan $laporan){
         $koperasi = Auth::user()->koperasi;
-        if ($laporanBulananData->koperasi_id !== $koperasi->id) {
+        if ($laporan->koperasi_id !== $koperasi->id) {
             abort(403);
         }
 
-        if (in_array($laporanBulananData->status, ['Submitted', 'Approved'])) {
+        if (in_array($laporan->status, ['Submitted', 'Approved'])) {
             return back()->withErrors([
                 'message' => 'Laporan yang sudah terkirim atau disetujui tidak dapat dihapus!'
             ]);
         }
 
-        $laporanBulananData->delete();
+        $laporan->delete();
         return back()->with('success', 'Laporan berhasil dihapus');
     }
 
