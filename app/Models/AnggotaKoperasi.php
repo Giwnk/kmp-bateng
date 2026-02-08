@@ -30,13 +30,12 @@ class AnggotaKoperasi extends Model
         $sukarela = $this->transaksis()->where('jenis_transaksi', 'Simpanan Sukarela')->sum('jumlah');
 
         // Penarikan biasanya ngurangin yang Sukarela doang
-        $penarikan = $this->transaksis()->where('jenis_transaksi', 'penarikan')->sum('jumlah');
+        $penarikan = $this->transaksis()->where('jenis_transaksi', 'Penarikan')->sum('jumlah');
 
         return [
             'pokok' => $pokok,
-            'wajib' => $wajib,
-            'sukarela' => $sukarela - $penarikan,
-            'total' => ($pokok + $wajib + $sukarela) - $penarikan
+            'wajib' => $wajib - $penarikan,
+            'total' => ($pokok + $wajib) - $penarikan
         ];
     }
 
