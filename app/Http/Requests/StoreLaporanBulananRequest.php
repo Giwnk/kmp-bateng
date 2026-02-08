@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreLaporanBulananRequest extends FormRequest
 {
@@ -23,13 +24,12 @@ class StoreLaporanBulananRequest extends FormRequest
     {
         return [
             'bulan' => 'required|integer|min:1|max:12',
-            'tahun' => 'required|integer|min:2000|max:'.(date('Y'+1)),
+            'tahun' => 'required|integer|min:2000|max:' . (intval(date('Y')) + 1),
 
-            'total_simpanan_pokok' => 'required|numeric|min:0',
-            'total_pinjaman_wajib' => 'required|numeric|min:0',
-            'total_shu' => 'required|numeric',
+            'total_simpanan_pokok' => 'nullable|numeric|min:0',
+            'total_pinjaman_wajib' => 'nullable|numeric|min:0',
             'catatan' => 'nullable|string|max:225',
-            'status' => ['required', Rule::in(['Draft', 'Submitted','Rejected', 'Approved'])],
+            'status' => ['nullable', Rule::in(['Draft', 'Submitted','Rejected', 'Approved'])],
             'jumlah_anggota_aktif' => 'nullable|integer|min:0',
         ];
     }

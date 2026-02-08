@@ -34,7 +34,7 @@ class StoreTransaksiRequest extends FormRequest
             'jenis_transaksi' => [
                 'required',
                 'string',
-                'in:Simpanan Pokok,Simpanan Wajib,Simpanan Sukarela,Penarikan Tunai'
+                'in:Simpanan Pokok,Simpanan Wajib,Simpanan Sukarela,Penarikan'
             ],
 
             // 3. JUMLAH DUIT (Decimal)
