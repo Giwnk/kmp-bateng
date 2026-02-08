@@ -189,20 +189,29 @@ class HomeController extends Controller
     public function showKoperasi(Koperasi $koperasi)
     {
         // Load semua relasi yang dibutuhkan untuk halaman detail
-        $koperasi->load(['kecamatan', 'desa', 'jenisUsahas']);
+        $koperasi->load(['kecamatan', 'desa', 'jenisUsahas', 'ketua', 'bendahara', 'sekretaris', 'galeriKoperasis']);
         $koperasi->loadCount([
             'anggotaKoperasis', // Menghitung baris di tabel anggota_koperasis
 
-            // Menghitung pengurus (asumsi ada kolom 'kategori' di tabel sdm_koperasis)
+            // Menghitung pengurus (Sesuaikan string 'Pengurus Koperasi' dengan database)
             'sdmKoperasis as pengurus_count' => function ($query) {
-                $query->where('kategori', 'Pengurus');
+                $query->where('kategori', 'Pengurus Koperasi');
             },
 
-            // Menghitung pengawas
+            // Menghitung pengawas (Sesuaikan string 'Pengawas Koperasi' dengan database)
             'sdmKoperasis as pengawas_count' => function ($query) {
-                $query->where('kategori', 'Pengawas');
+                $query->where('kategori', 'Pengawas Koperasi');
             },
         ]);
+
+        // Hitung Total Simpanan Pokok & Wajib secara manual dan attach ke object koperasi
+        $koperasi->total_simpanan_pokok = $koperasi->transaksis()
+            ->where('jenis_transaksi', 'Simpanan Pokok')
+            ->sum('jumlah');
+
+        $koperasi->total_simpanan_wajib = $koperasi->transaksis()
+            ->where('jenis_transaksi', 'Simpanan Wajib')
+            ->sum('jumlah');
 
         return Inertia::render('KoperasiShow', [
             'koperasi' => $koperasi
