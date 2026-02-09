@@ -49,8 +49,8 @@ export default function Index({
             cancelButtonText: "Batal",
         }).then((result) => {
             if (result.isConfirmed) {
-                router.patch(
-                    route("admin.laporan-bulanan.updateStatus", id),
+                router.put(
+                    route("admin.laporan.updateStatus", id),
                     {
                         status: newStatus,
                     },
