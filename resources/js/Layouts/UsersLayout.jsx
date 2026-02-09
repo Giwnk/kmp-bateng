@@ -1,5 +1,5 @@
 import SidebarUsers from "@/Components/SelfMade/SidebarAdmin";
-import { Banknote, FileBarChart2, Handshake, LayoutDashboard, Settings, Users, UserStarIcon } from "lucide-react";
+import { Banknote, FileBarChart2, Handshake, ImageIcon, LayoutDashboard, Settings, Users, UserStarIcon } from "lucide-react";
 
 export default function UsersLayout({ auth, user, header, children }) {
     const usersMenu = [
@@ -38,6 +38,12 @@ export default function UsersLayout({ auth, user, header, children }) {
             route: route("users.laporan.index", auth.user.koperasi_id),
             active: "users.laporan.*",
             icon: <FileBarChart2 size={20} />,
+        },
+        {
+            label: "Galeri Koperasi",
+            route: route("users.galeri.index", auth.user.koperasi_id),
+            active: "users.galeri.*",
+            icon: <ImageIcon size={20} />,
         },
     ];
 
