@@ -15,6 +15,8 @@ import {
     CheckCircleIcon,
     ArrowLeft,
     EditIcon,
+    Image,
+    ImageOff,
 } from "lucide-react";
 import JenisUsahaSection from "@/Components/SelfMade/Section/JenisUsahaSection";
 import KoperasiCard from "@/Components/SelfMade/Cards/KoperasiCard";
@@ -45,6 +47,18 @@ export default function Show({ auth, koperasi }) {
         }).format(number || 0);
     };
 
+    const formatTanggal = (dateString) => {
+        if (!dateString) return "Tanggal tidak tersedia";
+
+        const date = new Date(dateString);
+        // Kita pakai Intl.DateTimeFormat biar otomatis dapet nama bulan Indo
+        return new Intl.DateTimeFormat("id-ID", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+        }).format(date);
+    };
+
     return (
         <UsersLayout auth={auth}>
             <Head title={`Detail ${koperasi.nama}`} />
@@ -58,7 +72,11 @@ export default function Show({ auth, koperasi }) {
                                 {koperasi.nama}
                             </h1>
                             <span
-                                className={`px-3 py-1 rounded-full text-xs font-bold ${koperasi.status_operasional ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700"}`}
+                                className={`px-3 py-1 rounded-full text-xs font-bold ${
+                                    koperasi.status_operasional
+                                        ? "bg-emerald-100 text-emerald-700"
+                                        : "bg-red-100 text-red-700"
+                                }`}
                             >
                                 {koperasi.status_operasional
                                     ? "AKTIF"
@@ -84,7 +102,7 @@ export default function Show({ auth, koperasi }) {
                     {/* 1. TOTAL PENGURUS */}
                     <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                            <div className="p-2 bg-blue-50 text-blue-900 rounded-lg">
                                 <Briefcase size={20} />
                             </div>
                             <span className="text-xs text-gray-500 uppercase font-bold">
@@ -94,7 +112,7 @@ export default function Show({ auth, koperasi }) {
                         <p className="text-2xl font-bold text-gray-800">
                             {koperasi.jumlah_pengurus || 0}{" "}
                             <span className="text-sm font-medium text-gray-400">
-                                Org
+                                Orang
                             </span>
                         </p>
                     </div>
@@ -102,7 +120,7 @@ export default function Show({ auth, koperasi }) {
                     {/* 2. TOTAL PENGAWAS */}
                     <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 bg-purple-50 text-purple-600 rounded-lg">
+                            <div className="p-2 bg-purple-50 text-purple-800 rounded-lg">
                                 <ShieldCheck size={20} />
                             </div>
                             <span className="text-xs text-gray-500 uppercase font-bold">
@@ -112,7 +130,7 @@ export default function Show({ auth, koperasi }) {
                         <p className="text-2xl font-bold text-gray-800">
                             {koperasi.jumlah_pengawas || 0}{" "}
                             <span className="text-sm font-medium text-gray-400">
-                                Org
+                                Orang
                             </span>
                         </p>
                     </div>
@@ -120,7 +138,7 @@ export default function Show({ auth, koperasi }) {
                     {/* 3. TOTAL ANGGOTA */}
                     <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
+                            <div className="p-2 bg-emerald-50 text-emerald-800 rounded-lg">
                                 <Users size={20} />
                             </div>
                             <span className="text-xs text-gray-500 uppercase font-bold">
@@ -130,7 +148,7 @@ export default function Show({ auth, koperasi }) {
                         <p className="text-2xl font-bold text-gray-800">
                             {koperasi.jumlah_anggota || 0}{" "}
                             <span className="text-sm font-medium text-gray-400">
-                                Org
+                                Orang
                             </span>
                         </p>
                     </div>
@@ -153,7 +171,7 @@ export default function Show({ auth, koperasi }) {
                     {/* 5. TOTAL SIMPANAN WAJIB */}
                     <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition">
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 bg-rose-50 text-rose-600 rounded-lg">
+                            <div className="p-2 bg-rose-50 text-red-900 rounded-lg">
                                 <Banknote size={20} />
                             </div>
                             <span className="text-xs text-gray-500 uppercase font-bold">
@@ -193,11 +211,11 @@ export default function Show({ auth, koperasi }) {
                             />
                             <InfoRow
                                 label="Tanggal AHU"
-                                value={koperasi.tanggal_ahu}
+                                value={formatTanggal(koperasi.tanggal_ahu)}
                             />
                             <InfoRow
                                 label="Tanggal Berdiri"
-                                value={koperasi.tanggal_berdiri}
+                                value={formatTanggal(koperasi.tanggal_berdiri)}
                             />
                             <InfoRow
                                 label="Alamat Kantor"
@@ -228,6 +246,18 @@ export default function Show({ auth, koperasi }) {
                             <InfoRow
                                 label="Facebook"
                                 value={koperasi.link_facebook}
+                            />
+                            <InfoRow
+                                label="Instagram"
+                                value={koperasi.link_instagram}
+                            />
+                            <InfoRow
+                                label="TikTok"
+                                value={koperasi.link_tiktok}
+                            />
+                            <InfoRow
+                                label="Youtube"
+                                value={koperasi.link_youtube}
                             />
                             {/* Dst... */}
                         </div>
@@ -265,19 +295,30 @@ export default function Show({ auth, koperasi }) {
 
             {/* --- SECTION 4: GALERI (Placeholder) --- */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <h3 className="text-lg font-bold text-gray-800 mb-4">
-                    📷 Galeri Kegiatan
+                <h3 className="text-lg font-bold text-gray-800 mb-4 flex gap-2">
+                    <Image /> Galeri Kegiatan
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {/* Placeholder Kotak Abu-abu kalau belum ada foto */}
-                    {[1, 2, 3, 4].map((i) => (
-                        <div
-                            key={i}
-                            className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs"
-                        >
-                            Foto {i}
+                    {koperasi.galeri_koperasis &&
+                    koperasi.galeri_koperasis.length > 0 ? (
+                        koperasi.galeri_koperasis.map((item) => (
+                            <div
+                                key={item.id}
+                                className="aspect-video bg-gray-100 rounded-2xl overflow-hidden border border-gray-100 shadow-sm"
+                            >
+                                <img
+                                    src={`/storage/${item.foto_path}`}
+                                    alt="Galeri Koperasi"
+                                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                                />
+                            </div>
+                        ))
+                    ) : (
+                        <div className="col-span-full py-10 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-300 text-gray-400">
+                            <p className="text-sm"> <ImageOff/> Belum ada foto galeri.</p>
                         </div>
-                    ))}
+                    )}
                 </div>
             </div>
         </UsersLayout>

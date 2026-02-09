@@ -170,7 +170,7 @@ export default function Index({ auth, sdmKoperasi, jabatanOpt, statusOpt }) {
                     <div className="flex-1 overflow-auto">
                         <Table
                             columns={columns}
-                            items={{ data: sdmKoperasi }}
+                            items={sdmKoperasi}
                         />
                     </div>
                 </div>

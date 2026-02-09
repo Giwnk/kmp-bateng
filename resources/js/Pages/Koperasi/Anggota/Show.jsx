@@ -3,6 +3,7 @@ import { Link } from "@inertiajs/react";
 import {
     Activity,
     ArrowLeft,
+    Banknote,
     Briefcase,
     Calendar,
     Edit,
@@ -44,14 +45,27 @@ export default function Show({ auth, anggotaData }) {
                     </div>
                 </div>
 
-                <div className="flex justify-center items-center">
-                    <div className="bg-white p-10 rounded-[3.5rem] flex justify-center items-center border border-gray-100 shadow-sm">
+                <div className="flex justify-start items-center flex-col gap-3">
+                    <div className="flex flex-col md:flex-row justify-center w-full items-center gap-5">
+                        <StatCard
+                            title={"Simpanan Wajib"}
+                            icon={Banknote}
+                            value={anggotaData.saldo_simpanan_wajib}
+                            unit="Rp"
+                        />
+                        <StatCard
+                            title={"Simpanan Pokok"}
+                            icon={Banknote}
+                            value={anggotaData.saldo_simpanan_pokok}
+                            unit="Rp"
+                        />
+                    </div>
+                    <div className="bg-white p-10 rounded-[1.5rem] flex justify-center items-center border-2 border-slate-300 shadow-sm">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                             <InfoItem
                                 label="Nama"
                                 value={anggotaData.nama}
-                                icon={<User
-                                 />}
+                                icon={<User />}
                             />
                             <InfoItem
                                 label="NIK"
@@ -71,7 +85,7 @@ export default function Show({ auth, anggotaData }) {
                             <InfoItem
                                 label="Mulai Bergabung"
                                 value={formatTanggal(
-                                    anggotaData.tanggal_bergabung,
+                                    anggotaData.tanggal_bergabung
                                 )}
                                 icon={<Calendar />}
                             />
@@ -90,7 +104,7 @@ export default function Show({ auth, anggotaData }) {
 
 function InfoItem({ label, value, icon }) {
     return (
-        <div className="flex items-start gap-4">
+        <div className="flex items-start gap-4 w-fit">
             <div className="p-3 bg-gray-50 rounded-2xl text-gray-500">
                 {React.cloneElement(icon, { size: 18 })}
             </div>
@@ -100,6 +114,27 @@ function InfoItem({ label, value, icon }) {
                 </p>
                 <p className="text-base font-bold text-gray-800">
                     {value || "Tidak Tersedia"}
+                </p>
+            </div>
+        </div>
+    );
+}
+
+function StatCard({ title, value, unit, icon: Icon, color }) {
+    return (
+        <div className="bg-white p-6 rounded-3xl border-2 w-full border-slate-300 shadow-sm flex flex-col items-start gap-5 hover:shadow-md transition-all">
+            <div className={`p-4 rounded-2xl ${color}`}>
+                <Icon size={24} />
+            </div>
+            <div>
+                <p className="text-sm font-bold text-blue-950 uppercase tracking-widest mb-1">
+                    {title}
+                </p>
+                <h3 className="text-lg font-black text-slate-950 leading-none">
+                    {value}
+                </h3>
+                <p className="text-[14px] font-medium text-slate-400 mt-1 ">
+                    {unit}
                 </p>
             </div>
         </div>

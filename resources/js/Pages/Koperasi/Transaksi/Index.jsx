@@ -1,15 +1,42 @@
+import Button from "@/Components/SelfMade/Button";
 import Dropdown from "@/Components/SelfMade/Dropdown";
+import Header from "@/Components/SelfMade/Header";
 import ModalDialog from "@/Components/SelfMade/ModalDialog";
 import Table from "@/Components/SelfMade/Table";
 import TextInput from "@/Components/SelfMade/TextInput";
 import UsersLayout from "@/Layouts/UsersLayout";
-import { useForm } from "@inertiajs/react";
-import { Plus, Save, X } from "lucide-react";
-import { useState } from "react";
+import { router, useForm } from "@inertiajs/react";
+import {
+    Banknote,
+    Calendar,
+    ChevronRightIcon,
+    Eye,
+    Layers,
+    Plus,
+    Save,
+    Text,
+    Trash2,
+    User,
+    Wallet2,
+    X,
+} from "lucide-react";
+import React, { useState } from "react";
 import Swal from "sweetalert2";
 
-export default function Index({ auth, transaksi, anggotaOpt, jenisTransaksiOpt, filters }) {
+export default function Index({
+    auth,
+    transaksi,
+    anggotaOpt,
+    jenisTransaksiOpt,
+    filters,
+}) {
     const [openModal, setOpenModal] = useState(false);
+    const [openShowModal, setOpenShowModal] = useState(false);
+    const [selectedTransaksi, setSelectedTransaksi] = useState(null);
+    const [params, setParams] = useState({
+        search: filters.search || "",
+        jenis: filters.jenis || "",
+    });
 
     const formatTanggal = (dateString) => {
         if (!dateString) return "Tanggal tidak tersedia";
@@ -44,10 +71,10 @@ export default function Index({ auth, transaksi, anggotaOpt, jenisTransaksiOpt, 
 
     const columns = [
         {
-            header: "Nomor Transaksi",
+            header: "Nama Anggota",
             render: (item) => (
                 <span className="font-bold text-gray-800 text-xs uppercase tracking-tight">
-                    {item.nomor_transaksi}
+                    {item.anggota_koperasi.nama}
                 </span>
             ),
         },
@@ -68,10 +95,20 @@ export default function Index({ auth, transaksi, anggotaOpt, jenisTransaksiOpt, 
             ),
         },
         {
-            header: "Tanggal Transaksi",
+            header: "Aksi",
+            className: "text-center",
             render: (item) => (
-                <span className="font-bold text-gray-800 text-xs uppercase tracking-tight">
-                    {formatTanggal(item.tanggal_transaksi)}
+                <span className="font-bold flex justify-center text-gray-800 text-sm uppercase tracking-tight">
+                    <button
+                        onClick={() => handleShow(item)}
+                        className="p-1.5 flex justify-center items-center hover:bg-blue-50 text-blue-900 hover:text-blue-950 transition-all font-semibold rounded-lg"
+                    >
+                        Lihat Detail{" "}
+                        <ChevronRightIcon
+                            className="hover:translate-x-1 transition-transform"
+                            size={24}
+                        />
+                    </button>
                 </span>
             ),
         },
@@ -82,9 +119,21 @@ export default function Index({ auth, transaksi, anggotaOpt, jenisTransaksiOpt, 
         setOpenModal(true);
     };
 
+    const handleShow = (item) => {
+        setSelectedTransaksi(item);
+        setOpenShowModal(true);
+    };
+
+    const handleFilter = () => {
+        router.get(route("users.transaksi.index"), params, {
+            preserveState: true, // 👈 Penting! Biar input gak kehilangan fokus
+            replace: true, // Biar gak menumpuk history di browser
+        });
+    };
+
     const handleDelete = (id) => {
         Swal.fire({
-            title: "Hapus Pengurus?",
+            title: "Hapus Transaksi?",
             text: "Data ini tidak dapat dikembalikan!",
             icon: "warning",
             showCancelButton: true,
@@ -93,48 +142,74 @@ export default function Index({ auth, transaksi, anggotaOpt, jenisTransaksiOpt, 
         }).then((result) => {
             if (result.isConfirmed) {
                 destroy(route("users.transaksi.destroy", id));
+                setOpenShowModal(false);
             }
         });
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault()
-        post(route('users.transaksi.store'), {
+        e.preventDefault();
+        post(route("users.transaksi.store"), {
             onSuccess: () => {
-                setOpenModal(false)
-                reset()
-            }
-        })
-    }
+                setOpenModal(false);
+                reset();
+            },
+        });
+    };
 
     return (
         <UsersLayout auth={auth}>
-            <div className="p-6">
-                <div className="flex justify-between items-end">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900 tracking-tighter">
-                            Manajemen Transaksi
-                        </h1>
-                        <p className="text-gray-500 text-sm font-medium">
-                            Kelola Seluruh Transaksi Koperasi.
-                        </p>
+            <div className="p-6 flex flex-col gap-5">
+                <Header title={'Manajemen Transaksi'} desc={'Kelola Seluruh Transaksi Koperasi.'} >
+                    <Button icon={Plus} variant="primary" onClick={handleAdd}>
+                        Tambah Transaksi
+                    </Button>
+                </Header>
+
+                <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 mb-6 flex flex-wrap items-end gap-4">
+                    {/* Input Pencarian */}
+                    <div className="flex-1 min-w-[300px]">
+                        <TextInput
+                            placeholder="Cari No. Transaksi atau Nama Anggota..."
+                            value={params.search}
+                            onChange={(e) =>
+                                setParams({ ...params, search: e.target.value })
+                            }
+                            className="w-full"
+                        />
                     </div>
-                    <button
-                        onClick={handleAdd}
-                        type="button"
-                        className="flex items-center gap-2 bg-blue-950 text-white px-5 py-3 rounded-2xl font-medium text-sm tracking-widest hover:bg-blue-900 transition-all shadow-xl shadow-gray-200"
-                    >
-                        <Plus size={16} /> Tambah Transaksi
-                    </button>
+
+                    {/* Dropdown Jenis Transaksi */}
+                    <Dropdown
+                        options={jenisTransaksiOpt}
+                        value={params.jenis}
+                        onChange={(e) =>
+                            setParams({ ...params, jenis: e.target.value })
+                        }
+                        placeholder="Pilih Jenis Transaksi"
+                    ></Dropdown>
+
+                    {/* Tombol Aksi */}
+                    <div className="flex gap-2">
+                        <Button variant="primary" onClick={handleFilter}>
+                            Filter
+                        </Button>
+                        <button
+                            onClick={() => {
+                                setParams({ search: "", jenis: "" });
+                                router.get(route("users.transaksi.index"));
+                            }}
+                            className="bg-gray-100 text-gray-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-gray-200 transition-all"
+                        >
+                            Reset
+                        </button>
+                    </div>
                 </div>
 
                 <Table columns={columns} items={transaksi}></Table>
             </div>
 
-            <ModalDialog
-                show={openModal}
-                onClose={() => setOpenModal(false)}
-            >
+            <ModalDialog show={openModal} onClose={() => setOpenModal(false)}>
                 <form onSubmit={handleSubmit} className="p-8">
                     <div className="flex justify-end items-center">
                         <button
@@ -155,7 +230,9 @@ export default function Index({ auth, transaksi, anggotaOpt, jenisTransaksiOpt, 
                             type={"text"}
                             value={data.anggota_koperasi_id}
                             error={errors.anggota_koperasi_id}
-                            onChange={(e) => setData("anggota_koperasi_id", e.target.value)}
+                            onChange={(e) =>
+                                setData("anggota_koperasi_id", e.target.value)
+                            }
                             options={anggotaOpt}
                         />
                         <Dropdown
@@ -193,7 +270,6 @@ export default function Index({ auth, transaksi, anggotaOpt, jenisTransaksiOpt, 
                                 setData("keterangan", e.target.value)
                             }
                         />
-
                     </div>
 
                     <div className="mt-8 flex justify-end gap-4">
@@ -219,6 +295,91 @@ export default function Index({ auth, transaksi, anggotaOpt, jenisTransaksiOpt, 
                     </div>
                 </form>
             </ModalDialog>
+
+            <ModalDialog
+                show={openShowModal}
+                onClose={() => setOpenShowModal(false)}
+            >
+                <div className="bg-white p-10 rounded-[3.5rem] border border-gray-100 shadow-sm">
+                    <div className="flex justify-between items-center mb-6">
+                        <h2 className="text-xl font-bold text-slate-950 ">
+                            Detail Transaksi
+                        </h2>
+                        <button
+                            className="text-slate-600 rounded-full p-3 hover:bg-slate-200 transition-all "
+                            onClick={() => setOpenShowModal(false)}
+                        >
+                            <X size={28} />
+                        </button>
+                    </div>
+
+                    {selectedTransaksi && (
+                        <div className="space-y-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <InfoItem
+                                    label="Nomor Transaksi"
+                                    value={selectedTransaksi.nomor_transaksi}
+                                    icon={<Banknote />}
+                                />
+                                <InfoItem
+                                    label="Anggota Koperasi"
+                                    value={
+                                        selectedTransaksi.anggota_koperasi.nama
+                                    }
+                                    icon={<User />}
+                                />
+                                <InfoItem
+                                    label="Jenis Transaksi"
+                                    value={selectedTransaksi.jenis_transaksi}
+                                    icon={<Layers />}
+                                />
+                                <InfoItem
+                                    label="Jumlah Nominal Transaksi"
+                                    value={selectedTransaksi.jumlah}
+                                    icon={<Wallet2 />}
+                                />
+                                <InfoItem
+                                    label="Tanggal Transaksi"
+                                    value={formatTanggal(
+                                        selectedTransaksi.tanggal_transaksi,
+                                    )}
+                                    icon={<Calendar />}
+                                />
+                                <InfoItem
+                                    label="Keterangan"
+                                    value={selectedTransaksi.keterangan}
+                                    icon={<Text />}
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="flex justify-start items-center mt-8">
+                        <button className="py-2 px-2 rounded-lg flex items-center justify-center gap-3 border-2 border-red-900 text-red-900 hover:bg-red-900 hover:text-white transition-all font-semibold bg-red-100" onClick={() => handleDelete(selectedTransaksi.id)}>
+                            <Trash2 size={20} /> Hapus Transaksi
+                        </button>
+                    </div>
+                </div>
+            </ModalDialog>
         </UsersLayout>
+    );
+}
+
+// Komponen Kecil untuk Baris Informasi agar rapi
+function InfoItem({ label, value, icon }) {
+    return (
+        <div className="flex items-start gap-4">
+            <div className="p-3 bg-gray-50 rounded-2xl text-gray-500">
+                {React.cloneElement(icon, { size: 18 })}
+            </div>
+            <div>
+                <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] mb-1">
+                    {label}
+                </p>
+                <p className="text-sm font-bold text-gray-800">
+                    {value || "-"}
+                </p>
+            </div>
+        </div>
     );
 }

@@ -14,6 +14,7 @@ export default function Edit({ auth, koperasi, kecamatanOpt, jenisUsahaOpt }) {
     const [desaOptions, setDesaOptions] = useState([]);
     const isFirstRender = useRef(true);
 
+
     const { data, setData, put, processing, errors } = useForm({
         // A. Identitas
         // --- 1. IDENTITAS ---
@@ -91,7 +92,7 @@ export default function Edit({ auth, koperasi, kecamatanOpt, jenisUsahaOpt }) {
             <div className="max-w-7xl mx-auto mb-6 flex justify-between items-center">
                 <div className="flex items-center gap-3">
                     <Link
-                        href={route("admin.koperasi.index")}
+                        href={route("users.koperasi.show", koperasi)}
                         className="p-2 bg-white rounded-full shadow-sm hover:bg-gray-200 transition-all"
                     >
                         <ArrowLeft size={20} />
