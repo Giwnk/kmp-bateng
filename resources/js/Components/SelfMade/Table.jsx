@@ -3,6 +3,8 @@ import Pagination from "./Pagination"; // 👈 1. Import Pagination Kamu
 import { Grid2X2X } from "lucide-react";
 
 export default function Table({ columns, items }) {
+    const displayData = items?.data || items || [];
+    const links = items?.links || null;
     return (
         <div className="bg-white rounded-3xl shadow-xl border-2 border-slate-300 overflow-hidden">
             {/* --- BAGIAN TABEL (SCROLLABLE) --- */}
@@ -24,8 +26,8 @@ export default function Table({ columns, items }) {
 
                     {/* Body */}
                     <tbody className="divide-y divide-gray-100">
-                        {items.data.length > 0 ? (
-                            items.data.map((item, rowIndex) => (
+                        {displayData.length > 0 ? (
+                            displayData.map((item, rowIndex) => (
                                 <tr
                                     key={item.id || rowIndex}
                                     className="hover:bg-gray-50 transition"
@@ -65,11 +67,11 @@ export default function Table({ columns, items }) {
 
             {/* --- BAGIAN FOOTER (PAGINATION) --- */}
             {/* Kita cek dulu, ada gak link-nya? (biar gak muncul kotak kosong kalau data cuma 1 page) */}
-            {items.links && items.links.length > 3 && (
+            {links && links.length > 0 && (
                 <div className="border-t border-gray-100 bg-gray-50 px-6 py-4">
                     {/* 👈 2. Panggil Component Pagination Disini */}
                     {/* Kita lempar props 'links' dari object items Laravel */}
-                    <Pagination links={items.links} />
+                    <Pagination links={links} />
                 </div>
             )}
         </div>
