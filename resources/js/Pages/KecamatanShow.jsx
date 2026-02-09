@@ -1,7 +1,8 @@
 import React from "react";
 import { Head, Link } from "@inertiajs/react";
 import Table from "@/Components/SelfMade/Table";
-import { Building2, Users, CheckCircle, ArrowLeft } from "lucide-react";
+import { Building2, Users, CheckCircle, ArrowLeft, Activity, Building2Icon } from "lucide-react";
+import StatCard from "@/Components/SelfMade/Cards/StatCard";
 
 // Pakai Layout Publik (Guest) atau buat komponen tanpa pembungkus auth
 export default function Show({ kecamatan, koperasis, stats }) {
@@ -10,7 +11,12 @@ export default function Show({ kecamatan, koperasis, stats }) {
             header: "Nama Koperasi",
             render: (item) => (
                 <div className="flex flex-col">
-                    <Link href={route('koperasi.show', item.id)} className="font-bold text-gray-800">{item.nama}</Link>
+                    <Link
+                        href={route("koperasi.show", item.id)}
+                        className="text-gray-800 flex items-center gap-3 font-semibold hover:text-blue-900 underline transition-all"
+                    >
+                        {item.nama}
+                    </Link>
                     <span className="text-[10px] text-gray-400 uppercase tracking-tighter">
                         {item.nomor_induk || "Tanpa NIK"}
                     </span>
@@ -61,7 +67,7 @@ export default function Show({ kecamatan, koperasis, stats }) {
                 <div className="mb-8 flex items-center justify-between">
                     <div>
                         <Link
-                            href={route('home')}
+                            href={route("home")}
                             className="flex items-center gap-2 text-gray-400 hover:text-red-600 mb-2 transition-all"
                         >
                             <ArrowLeft size={16} />
@@ -69,7 +75,7 @@ export default function Show({ kecamatan, koperasis, stats }) {
                                 Beranda Utama
                             </span>
                         </Link>
-                        <h1 className="text-4xl font-black text-gray-900 uppercase tracking-tighter">
+                        <h1 className="text-4xl font-black text-gray-900 tracking-tighter">
                             Kecamatan {kecamatan.nama}
                         </h1>
                     </div>
@@ -77,45 +83,33 @@ export default function Show({ kecamatan, koperasis, stats }) {
 
                 {/* Grid Statistik Publik */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                    <div className="bg-white p-6 rounded-[1.5rem] border border-gray-100 shadow-sm">
-                        <div className="p-3 bg-red-50 text-red-600 rounded-xl w-fit mb-4">
-                            <Building2 size={20} />
-                        </div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">
-                            Total Unit Koperasi
-                        </p>
-                        <p className="text-3xl font-black text-gray-900">
-                            {stats.total_unit}
-                        </p>
-                    </div>
+                    <StatCard
+                        title={"Total Unit Koperasi"}
+                        value={stats.total_unit}
+                        icon={Building2Icon}
+                        color={"bg-blue-50 text-blue-900"}
+                        unit={"Unit"}
+                    ></StatCard>
 
-                    <div className="bg-white p-6 rounded-[1.5rem] border border-gray-100 shadow-sm">
-                        <div className="p-3 bg-emerald-50 text-emerald-600 rounded-xl w-fit mb-4">
-                            <CheckCircle size={20} />
-                        </div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">
-                            Unit Berstatus Aktif
-                        </p>
-                        <p className="text-3xl font-black text-gray-900">
-                            {stats.aktif}
-                        </p>
-                    </div>
+                    <StatCard
+                        title={"Total Unit Koperasi Aktif"}
+                        value={stats.aktif}
+                        icon={Activity}
+                        color={"bg-green-50 text-green-600"}
+                        unit={"Unit"}
+                    ></StatCard>
 
-                    <div className="bg-white p-6 rounded-[1.5rem] border border-gray-100 shadow-sm">
-                        <div className="p-3 bg-blue-50 text-blue-600 rounded-xl w-fit mb-4">
-                            <Users size={20} />
-                        </div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">
-                            Total Anggota Terdaftar
-                        </p>
-                        <p className="text-3xl font-black text-gray-900">
-                            {stats.total_anggota.toLocaleString()}
-                        </p>
-                    </div>
+                    <StatCard
+                        title={"Total Anggota Terdaftar"}
+                        value={stats.total_anggota.toLocaleString()}
+                        icon={Users}
+                        color={"bg-amber-50 text-amber-8    00"}
+                        unit={"Orang"}
+                    ></StatCard>
                 </div>
 
                 {/* Tabel Publik */}
-                <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
+                <div className="bg-white border border-gray-100 shadow-sm overflow-hidden">
                     <Table columns={columns} items={koperasis} />
                 </div>
             </div>

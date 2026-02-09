@@ -32,7 +32,7 @@ export default function Home({
         {
             header: "Kecamatan",
             render: (kec) => (
-                <div className="flex items-center gap-3 font-semibold hover:text-blue-900 hover:underline transition-all">
+                <div className="flex items-center gap-3 font-semibold hover:text-blue-900 underline transition-all">
                     <Link href={route("kecamatan.show", kec.id)}>
                         {kec.kecamatan}
                     </Link>
