@@ -75,6 +75,7 @@ Route::middleware(['auth', 'role:admin_dinas'])
             ->name('users.reset-password');
 
         Route::get('/laporan', [LaporanBulananController::class, 'index'])->name('laporan.index');
+        Route::put('/laporan/{laporan}', [LaporanBulananController::class, 'updateStatus'])->name('laporan.updateStatus');
 
 
 });
