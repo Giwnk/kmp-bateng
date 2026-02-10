@@ -1,4 +1,6 @@
+import Button from "@/Components/SelfMade/Button";
 import Dropdown from "@/Components/SelfMade/Dropdown";
+import Header from "@/Components/SelfMade/Header";
 import ModalDialog from "@/Components/SelfMade/ModalDialog";
 import Table from "@/Components/SelfMade/Table";
 import TextInput from "@/Components/SelfMade/TextInput";
@@ -137,23 +139,9 @@ export default function Index({ auth, koperasi, anggotaKoperasi, statusOpt }) {
     return (
         <UsersLayout auth={auth}>
             <div className="p-6">
-                <div className="flex justify-between items-end">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900 tracking-tighter">
-                            Manajemen Anggota
-                        </h1>
-                        <p className="text-gray-500 text-sm font-medium">
-                            Kelola Seluruh Anggota Koperasi.
-                        </p>
-                    </div>
-                    <button
-                        onClick={handleAdd}
-                        type="button"
-                        className="flex items-center gap-2 bg-blue-950 text-white px-5 py-3 rounded-2xl font-medium text-sm tracking-widest hover:bg-blue-900 transition-all shadow-xl shadow-gray-200"
-                    >
-                        <Plus size={16} /> Tambah Anggota
-                    </button>
-                </div>
+                <Header desc={"Kelola Seluruh Anggota Koperasi."} title={"Manajemen Anggota"}> 
+                    <Button variant="primary" icon={Plus} onClick={handleAdd}>Tambah Anggota</Button>
+                </Header>
 
                 <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden min-h-[500px] flex flex-col">
                     <div className="p-6 border-b border-gray-50"></div>

@@ -4,6 +4,7 @@ import { Head, Link, useForm } from "@inertiajs/react";
 import { Plus, Edit2, Trash2, UserCog, X, Eye } from "lucide-react";
 import Table from "@/Components/SelfMade/Table";
 import Swal from "sweetalert2";
+import Header from "@/Components/SelfMade/Header";
 
 export default function Index({ auth, sdmKoperasi, jabatanOpt, statusOpt }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -143,23 +144,17 @@ export default function Index({ auth, sdmKoperasi, jabatanOpt, statusOpt }) {
             <Head title="Kelola SDM Pengurus" />
 
             <div className="p-6 space-y-6">
-                <div className="flex justify-between items-end">
-                    <div>
-                        <h1 className="text-3xl font-bold text-gray-900 tracking-tighter">
-                            Manajemen Pengurus
-                        </h1>
-                        <p className="text-gray-500 text-sm font-medium">
-                            Kelola SDM Pengurus dan Pengawas Koperasi.
-                        </p>
-                    </div>
+                <Header
+                    title={"Kelola SDM Pengurus"}
+                    desc={"Kelola SDM Pengurus dan Pengawas Koperasi."}
+                >
                     <Link
                         href={route("users.sdm.create")}
                         className="flex items-center gap-2 bg-blue-950 text-white px-5 py-3 rounded-2xl font-medium text-sm tracking-widest hover:bg-blue-900 transition-all shadow-xl shadow-gray-200"
                     >
                         <Plus size={16} /> Tambah SDM
                     </Link>
-                </div>
-
+                </Header>
                 <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden min-h-[500px] flex flex-col">
                     <div className="p-6 border-b border-gray-50">
                         <h3 className="font-black text-gray-900 uppercase tracking-widest text-[10px] flex items-center gap-2">
