@@ -32,6 +32,14 @@ export default function Show({ kecamatan, koperasis, stats }) {
             ),
         },
         {
+            header: "No Badan Hukum",
+            render: (item) => (
+                <span className="text-xs text-gray-600 font-medium">
+                    {item.nomor_ahu || "-"}
+                </span>
+            ),
+        },
+        {
             header: "Anggota",
             className: "text-center",
             render: (item) => (
@@ -75,7 +83,7 @@ export default function Show({ kecamatan, koperasis, stats }) {
                                 Beranda Utama
                             </span>
                         </Link>
-                        <h1 className="text-4xl font-black text-gray-900 tracking-tighter">
+                        <h1 className="text-4xl font-bold text-gray-900">
                             Kecamatan {kecamatan.nama}
                         </h1>
                     </div>
@@ -103,7 +111,7 @@ export default function Show({ kecamatan, koperasis, stats }) {
                         title={"Total Anggota Terdaftar"}
                         value={stats.total_anggota.toLocaleString()}
                         icon={Users}
-                        color={"bg-amber-50 text-amber-8    00"}
+                        color={"bg-amber-50 text-amber-800"}
                         unit={"Orang"}
                     ></StatCard>
                 </div>

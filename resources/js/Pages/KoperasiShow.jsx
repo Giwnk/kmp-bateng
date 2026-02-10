@@ -15,6 +15,7 @@ import {
     Briefcase,
     CheckCircleIcon,
     Image,
+    ImageOff,
 } from "lucide-react";
 import JenisUsahaSection from "@/Components/SelfMade/Section/JenisUsahaSection";
 import KoperasiCard from "@/Components/SelfMade/Cards/KoperasiCard";
@@ -94,7 +95,7 @@ export default function Show({ auth, koperasi }) {
                 </div>
 
                 {/* Kartu Statistik Cepat */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                     {/* 1. TOTAL PENGURUS */}
                     <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition">
                         <div className="flex items-center gap-3 mb-2">
@@ -308,10 +309,10 @@ export default function Show({ auth, koperasi }) {
                             </div>
                         ))
                     ) : (
-                        <div className="col-span-full py-10 text-center bg-gray-50 rounded-2xl border border-dashed border-gray-300 text-gray-400">
-                            <p className="text-sm">
+                        <div className="col-span-full py-10 flex items-center justify-center text-center bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300 text-gray-400">
+                            <p className="text-base flex flex-col items-center gap-2">
                                 {" "}
-                                <ImageOff /> Belum ada foto galeri.
+                                <ImageOff size={28} /> Belum ada foto galeri.
                             </p>
                         </div>
                     )}
