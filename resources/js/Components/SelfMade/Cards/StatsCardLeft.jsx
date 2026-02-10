@@ -92,16 +92,16 @@ export default function StatsCardLeft({dataPotensi, dataSdm}) {
                 </div>
 
                 {/* SDM Details Grid (3 Kolom) */}
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                     {dataSdm.rincian.map((sdm, index) => (
                         <div
                             key={index}
-                            className="text-center p-2 rounded-lg bg-blue-100 border border-blue-950"
+                            className="flex items-center gap-2 flex-col p-2 rounded-lg bg-blue-100 border border-blue-950"
                         >
-                            <p className="text-xs font-extrabold text-blue-950 uppercase mb-1 text-center">
+                            <p className="text-xs font-bold text-blue-950 uppercase mb-1 text-center">
                                 {sdm.kategori}
                             </p>
-                            <p className="text-sm font-extrabold text-slate-950">
+                            <p className="text-base font-bold text-slate-950">
                                 {sdm.jumlah}
                             </p>
                         </div>
