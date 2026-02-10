@@ -1,7 +1,19 @@
+import React from "react";
 import SidebarUsers from "@/Components/SelfMade/SidebarAdmin";
-import { Banknote, FileBarChart2, Handshake, ImageIcon, LayoutDashboard, Settings, Users, UserStarIcon } from "lucide-react";
+import {
+    Banknote,
+    FileBarChart2,
+    Handshake,
+    ImageIcon,
+    LayoutDashboard,
+    Settings,
+    Users,
+    UserStarIcon,
+} from "lucide-react";
 
 export default function UsersLayout({ auth, user, header, children }) {
+    const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+
     const usersMenu = [
         {
             label: "Dashboard",
@@ -49,11 +61,31 @@ export default function UsersLayout({ auth, user, header, children }) {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            {/* Mobile Header */}
+            <header className="md:hidden h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sticky top-0 z-30">
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setIsSidebarOpen(true)}
+                        className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                    >
+                        <LayoutDashboard size={24} />
+                    </button>
+                    <span className="font-bold text-lg text-gray-800">
+                        Panel Anggota
+                    </span>
+                </div>
+            </header>
+
             {/* Panggil Sidebar, kasih menu Admin */}
-            <SidebarUsers auth={user} menuItems={usersMenu} />
+            <SidebarUsers
+                auth={user}
+                menuItems={usersMenu}
+                isOpen={isSidebarOpen}
+                setIsOpen={setIsSidebarOpen}
+            />
 
             {/* Konten Utama (Disebelah kanan Sidebar) */}
-            <main className="ml-64 p-8 transition-all duration-300">
+            <main className="md:ml-64 p-4 md:p-8 transition-all duration-300">
                 {/* Header Kecil (Opsional) */}
                 {header && (
                     <header className="mb-8">

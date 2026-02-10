@@ -11,6 +11,8 @@ import {
 } from "lucide-react"; // Icon contoh
 
 export default function AdminLayout({ user, header, children }) {
+    const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
+
     // 📋 DAFTAR MENU KHUSUS ADMIN
     const adminMenu = [
         {
@@ -53,11 +55,31 @@ export default function AdminLayout({ user, header, children }) {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            {/* Mobile Header */}
+            <header className="md:hidden h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sticky top-0 z-30">
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setIsSidebarOpen(true)}
+                        className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg"
+                    >
+                        <LayoutDashboard size={24} />
+                    </button>
+                    <span className="font-bold text-lg text-gray-800">
+                        Menu
+                    </span>
+                </div>
+            </header>
+
             {/* Panggil Sidebar, kasih menu Admin */}
-            <Sidebar auth={user} menuItems={adminMenu} />
+            <Sidebar
+                auth={user}
+                menuItems={adminMenu}
+                isOpen={isSidebarOpen}
+                setIsOpen={setIsSidebarOpen}
+            />
 
             {/* Konten Utama (Disebelah kanan Sidebar) */}
-            <main className="ml-64 p-8 transition-all duration-300">
+            <main className="md:ml-64 p-4 md:p-8 transition-all duration-300">
                 {/* Header Kecil (Opsional) */}
                 {header && (
                     <header className="mb-8">
