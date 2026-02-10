@@ -80,22 +80,23 @@ export default function Navbar() {
 
                 {/* Mobile Menu */}
                 {isOpen && (
-                    <div className="md:hidden absolute top-full left-0 right-0 mt-4 p-4 bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col gap-4 animate-in fade-in slide-in-from-top-4">
+                    <div className="md:hidden absolute transition-all top-full left-0 right-0 mt-4 p-4 bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col gap-4 animate-in fade-in slide-in-from-top-4">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 href={link.href}
                                 onClick={() => setIsOpen(false)}
-                                className="text-sm font-bold text-gray-500 p-2 hover:text-red-600"
+                                className="text-base font-bold text-slate-800 p-2 hover:text-blue-900"
                             >
                                 {link.name}
                             </Link>
                         ))}
                         <Link
                             href={route("login")}
-                            className="flex items-center justify-center gap-2 bg-red-600 text-white py-3 rounded-2xl text-xs font-black uppercase"
+                            className="flex items-center justify-center gap-2 bg-blue-950 text-white py-3 rounded-2xl text-xs font-black uppercase"
                         >
-                            Login Ke Sistem
+                            <LogIn size={14} />
+                            Login
                         </Link>
                     </div>
                 )}
